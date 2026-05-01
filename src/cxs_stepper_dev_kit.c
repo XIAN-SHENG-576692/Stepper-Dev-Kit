@@ -26,7 +26,7 @@ extern inline void CXS_STEPPER_DEV_KIT_micro_step_drive(
     uint16_t index,
     uint8_t  phase,
     uint8_t  precision,
-    uint8_t (*step_to_value)(uint8_t step),
+    uint8_t (*calc_amplitude)(float value),
     uint8_t *results
 );
 extern inline void

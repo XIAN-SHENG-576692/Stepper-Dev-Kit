@@ -22,18 +22,18 @@ extern "C"
 
 #define PHASES 16
 
-#define SINE_PRECISION 16
+#define AMPLITUDE_PRECISION 16
 
     typedef uint16_t pulse_results_t;
 
     typedef struct
     {
         uint8_t values[PHASES];
-    } sine_results_t;
+    } amplitude_results_t;
 
-    static inline uint8_t step_to_value(uint8_t i)
+    static inline uint8_t calc_amplitude_sine(float value)
     {
-        return 0xFF * sin(i * M_PI_2 / SINE_PRECISION);
+        return 0xFF * sin(value * M_PI_2);
     }
 
 #ifdef __cplusplus

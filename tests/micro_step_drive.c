@@ -8,15 +8,15 @@
 
 int main(int argc, char *argv[])
 {
-    sine_results_t sine_results = {0};
+    amplitude_results_t amplitude_results = {0};
 
-    CXS_STEPPER_DEV_KIT_sine_t stepper_sine = {
-        .step_to_value = step_to_value,
-        .phase         = PHASES,
-        .precision     = SINE_PRECISION,
+    CXS_STEPPER_DEV_KIT_amplitude_t stepper_amplitude = {
+        .calc_amplitude = calc_amplitude_sine,
+        .phase          = PHASES,
+        .precision      = AMPLITUDE_PRECISION,
     };
 
-    pulse_results_t targets[PHASES * SINE_PRECISION][PHASES] = {
+    pulse_results_t targets[PHASES * AMPLITUDE_PRECISION][PHASES] = {
   // clang-format off
         { 0xFF, 0x00, 0x00, 0x00, },
         { 0xEB, 0x61, 0x00, 0x00, },   
@@ -37,21 +37,21 @@ int main(int argc, char *argv[])
   // clang-format on
     };
 
-    uint16_t total =
-        CXS_STEPPER_DEV_KIT_PASS_get_micro_step_drive_total_steps(&stepper_sine
-        );
+    uint16_t total = CXS_STEPPER_DEV_KIT_PASS_get_micro_step_drive_total_steps(
+        &stepper_amplitude
+    );
 
     for (uint16_t i = 0; i < total; i++)
     {
-        CXS_STEPPER_DEV_KIT_sine_results_t params = {
+        CXS_STEPPER_DEV_KIT_amplitude_results_t params = {
             .index   = i,
-            .stepper = &stepper_sine,
-            .results = (uint8_t *)&sine_results,
+            .stepper = &stepper_amplitude,
+            .results = (uint8_t *)&amplitude_results,
         };
         CXS_STEPPER_DEV_KIT_PASS_micro_step_drive(&params);
-        for (size_t j = 0; j < stepper_sine.phase; j++)
+        for (size_t j = 0; j < stepper_amplitude.phase; j++)
         {
-            if (targets[i][j] != sine_results.values[j])
+            if (targets[i][j] != amplitude_results.values[j])
                 return 1;
         }
     }
