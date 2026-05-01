@@ -11,23 +11,26 @@ int main(int argc, char *argv[])
     pulse_results_t pulse_results = {0};
 
     CXS_STEPPER_DEV_KIT_pulse_t stepper_pulse = {
-        .index   = 0,
-        .phase   = PHASES,
-        .results = (uint8_t *)&pulse_results,
+        .phase = PHASES,
     };
 
     printf("PHASES: %2d\n", stepper_pulse.phase);
 
     printf("Resutls: \n");
-#define i (stepper_pulse.index)
-    for (i = 0; i < stepper_pulse.phase * 2; i++)
-    {
-        CXS_STEPPER_DEV_KIT_half_step_drive(
-            CXS_STEPPER_DEV_KIT_pulse_t_PASS_PARAMS(stepper_pulse)
+    uint8_t total =
+        CXS_STEPPER_DEV_KIT_PASS_get_half_step_drive_total_steps(&stepper_pulse
         );
+
+    for (uint8_t i = 0; i < total; i++)
+    {
+        CXS_STEPPER_DEV_KIT_pulse_results_t params = {
+            .index   = i,
+            .stepper = &stepper_pulse,
+            .results = (uint8_t *)&pulse_results,
+        };
+        CXS_STEPPER_DEV_KIT_PASS_half_step_drive(&params);
         printf("%0" STRINGIZE_THIS_DEFINITION(PHASES) "b\n", pulse_results);
     }
-#undef i
 
     return 0;
 }

@@ -11,9 +11,7 @@ int main(int argc, char *argv[])
     pulse_results_t pulse_results = {0};
 
     CXS_STEPPER_DEV_KIT_pulse_t stepper_pulse = {
-        .index   = 0,
-        .phase   = PHASES,
-        .results = (uint8_t *)&pulse_results,
+        .phase = PHASES,
     };
 
     pulse_results_t targets[PHASES] = {
@@ -36,16 +34,17 @@ int main(int argc, char *argv[])
 #endif
     };
 
-#define i (stepper_pulse.index)
-    for (i = 0; i < stepper_pulse.phase; i++)
+    for (uint8_t i = 0; i < stepper_pulse.phase; i++)
     {
-        CXS_STEPPER_DEV_KIT_full_step_drive(
-            CXS_STEPPER_DEV_KIT_pulse_t_PASS_PARAMS(stepper_pulse)
-        );
+        CXS_STEPPER_DEV_KIT_pulse_results_t params = {
+            .index   = i,
+            .stepper = &stepper_pulse,
+            .results = (uint8_t *)&pulse_results,
+        };
+        CXS_STEPPER_DEV_KIT_PASS_full_step_drive(&params);
         if (targets[i] ^ pulse_results)
             return 1;
     }
-#undef i
 
     return 0;
 }

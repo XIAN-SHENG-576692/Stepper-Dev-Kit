@@ -20,37 +20,47 @@ extern "C"
 
     typedef struct
     {
-        uint8_t  index;
-        uint8_t  phase;
-        uint8_t *results;
+        uint8_t phase;
     } CXS_STEPPER_DEV_KIT_pulse_t;
-
-#define CXS_STEPPER_DEV_KIT_pulse_t_DECLARE_PARAMS                             \
-    uint8_t index, uint8_t phase, uint8_t *results
-
-#define CXS_STEPPER_DEV_KIT_pulse_t_PASS_PARAMS(t) t.index, t.phase, t.results
 
     // ==================================================
     // Sine Wave
 
     typedef struct
     {
-        uint16_t index;
-        uint8_t  phase;
-        uint8_t  precision;
-        uint8_t (*index_to_sine)(uint8_t i);
-        uint8_t *results;
+        uint8_t phase;
+        uint8_t precision;
+        uint8_t (*step_to_value)(uint8_t step
+        ); // 0xFF * sin(step * M_PI_2 / precision);
     } CXS_STEPPER_DEV_KIT_sine_t;
 
-#define CXS_STEPPER_DEV_KIT_sine_t_DECLARE_PARAMS                              \
-    uint16_t index, uint8_t phase, uint8_t precision,                          \
-        uint8_t (*index_to_sine)(uint8_t i), uint8_t *results
+    // ==================================================
+    // Function
 
-#define CXS_STEPPER_DEV_KIT_sine_t_PASS_PARAMS(t)                              \
-    t.index, t.phase, t.precision, t.index_to_sine, t.results
+    typedef struct
+    {
+        CXS_STEPPER_DEV_KIT_pulse_t *stepper;
+        uint8_t                      index;
+        uint8_t                     *results;
+    } CXS_STEPPER_DEV_KIT_pulse_results_t;
 
+    typedef struct
+    {
+        CXS_STEPPER_DEV_KIT_sine_t *stepper;
+        uint16_t                    index;
+        uint8_t                    *results;
+    } CXS_STEPPER_DEV_KIT_sine_results_t;
+
+#define CXS_STEPPER_DEV_KIT_PASS_full_step_drive(t)                            \
+    CXS_STEPPER_DEV_KIT_full_step_drive(                                       \
+        (t)->index,                                                            \
+        (t)->stepper->phase,                                                   \
+        (t)->results                                                           \
+    )
     inline void CXS_STEPPER_DEV_KIT_full_step_drive(
-        CXS_STEPPER_DEV_KIT_pulse_t_DECLARE_PARAMS
+        uint8_t  index,
+        uint8_t  phase,
+        uint8_t *results
     )
     {
         for (size_t i = 0; i < phase; i++)
@@ -67,8 +77,37 @@ extern "C"
         return;
     }
 
+#define CXS_STEPPER_DEV_KIT_PASS_get_half_step_drive_total_steps(t)            \
+    CXS_STEPPER_DEV_KIT_get_half_step_drive_total_steps((t)->phase)
+    inline uint8_t
+    CXS_STEPPER_DEV_KIT_get_half_step_drive_total_steps(uint8_t phase)
+    {
+        return phase * 2;
+    }
+
+#define CXS_STEPPER_DEV_KIT_PASS_get_micro_step_drive_total_steps(t)           \
+    CXS_STEPPER_DEV_KIT_get_micro_step_drive_total_steps(                      \
+        (t)->phase,                                                            \
+        (t)->precision                                                         \
+    )
+    inline uint16_t CXS_STEPPER_DEV_KIT_get_micro_step_drive_total_steps(
+        uint8_t phase,
+        uint8_t precision
+    )
+    {
+        return phase * precision;
+    }
+
+#define CXS_STEPPER_DEV_KIT_PASS_half_step_drive(t)                            \
+    CXS_STEPPER_DEV_KIT_half_step_drive(                                       \
+        (t)->index,                                                            \
+        (t)->stepper->phase,                                                   \
+        (t)->results                                                           \
+    )
     inline void CXS_STEPPER_DEV_KIT_half_step_drive(
-        CXS_STEPPER_DEV_KIT_pulse_t_DECLARE_PARAMS
+        uint8_t  index,
+        uint8_t  phase,
+        uint8_t *results
     )
     {
         uint8_t half_index = (uint8_t)(index / 2);
@@ -87,8 +126,20 @@ extern "C"
         return;
     }
 
+#define CXS_STEPPER_DEV_KIT_PASS_micro_step_drive(t)                           \
+    CXS_STEPPER_DEV_KIT_micro_step_drive(                                      \
+        (t)->index,                                                            \
+        (t)->stepper->phase,                                                   \
+        (t)->stepper->precision,                                               \
+        (t)->stepper->step_to_value,                                           \
+        (t)->results                                                           \
+    )
     inline void CXS_STEPPER_DEV_KIT_micro_step_drive(
-        CXS_STEPPER_DEV_KIT_sine_t_DECLARE_PARAMS
+        uint16_t index,
+        uint8_t  phase,
+        uint8_t  precision,
+        uint8_t (*step_to_value)(uint8_t step),
+        uint8_t *results
     )
     {
         // The current full-step is determined by (index / precision)
@@ -103,14 +154,14 @@ extern "C"
             // Current phase in the cycle
             if (i == phase_offset)
             {
-                // Decaying index_to_sine wave: sin(90 down to 0)
-                val = index_to_sine(precision - step_index);
+                // Decaying step_to_value wave: sin(90 down to 0)
+                val = step_to_value(precision - step_index);
             }
             // Next phase in the cycle
             else if (i == (phase_offset + 1) % phase)
             {
-                // Rising index_to_sine wave: sin(0 up to 90)
-                val = index_to_sine(step_index);
+                // Rising step_to_value wave: sin(0 up to 90)
+                val = step_to_value(step_index);
             }
 
             results[i] = val;
@@ -119,8 +170,17 @@ extern "C"
         return;
     }
 
-    inline void
-    CXS_STEPPER_DEV_KIT_wave_drive(CXS_STEPPER_DEV_KIT_pulse_t_DECLARE_PARAMS)
+#define CXS_STEPPER_DEV_KIT_PASS_wave_drive(t)                                 \
+    CXS_STEPPER_DEV_KIT_wave_drive(                                            \
+        (t)->index,                                                            \
+        (t)->stepper->phase,                                                   \
+        (t)->results                                                           \
+    )
+    inline void CXS_STEPPER_DEV_KIT_wave_drive(
+        uint8_t  index,
+        uint8_t  phase,
+        uint8_t *results
+    )
     {
         for (size_t i = 0; i < phase; i++)
         {

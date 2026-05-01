@@ -37,7 +37,7 @@ extern "C"
         uint8_t values[PHASES];
     } sine_results_t;
 
-    static inline uint8_t index_to_sine(uint8_t i)
+    static inline uint8_t step_to_value(uint8_t i)
     {
         return 0xFF * sin(i * M_PI_2 / SINE_PRECISION);
     }
