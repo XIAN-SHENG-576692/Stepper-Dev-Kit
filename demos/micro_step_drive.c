@@ -22,28 +22,36 @@ int main(int argc, char *argv[])
     printf("SINE: \n");
     for (size_t i = 0; i < AMPLITUDE_PRECISION; i++)
     {
-        printf("0x%02X\n", stepper_amplitude.calc_amplitude(i));
+        printf(
+            "0x%02X\n",
+            stepper_amplitude.calc_amplitude((float)i / AMPLITUDE_PRECISION)
+        );
     }
 
-    printf("Resutls: \n");
+    printf("RESULTS: \n");
     uint16_t total = CXS_STEPPER_DEV_KIT_PASS_get_micro_step_drive_total_steps(
         &stepper_amplitude
     );
 
-    for (uint16_t i = 0; i < total; i++)
+    CXS_STEPPER_DEV_KIT_amplitude_params_t params = {
+        .index       = 0,
+        .phase_index = 0,
+        .stepper     = &stepper_amplitude,
+    };
+#define i params.index
+    for (i = 0; i < total; i++)
     {
-        CXS_STEPPER_DEV_KIT_amplitude_results_t params = {
-            .index   = i,
-            .stepper = &stepper_amplitude,
-            .results = (uint8_t *)&amplitude_results,
-        };
-        CXS_STEPPER_DEV_KIT_PASS_micro_step_drive(&params);
-        for (size_t j = 0; j < stepper_amplitude.phase; j++)
+#define j params.phase_index
+        for (j = 0; j < stepper_amplitude.phase; j++)
         {
+            amplitude_results.values[j] =
+                CXS_STEPPER_DEV_KIT_PASS_micro_step_drive(&params);
             printf("0x%02X,", amplitude_results.values[j]);
         }
         printf("\n");
+#undef j
     }
+#undef i
 
     return 0;
 }

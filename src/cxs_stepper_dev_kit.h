@@ -30,7 +30,8 @@ extern "C"
     {
         uint8_t phase;
         uint8_t precision;
-        uint8_t (*calc_amplitude)(float value); // Example: 0xFF * sin(value * M_PI_2);
+        uint8_t (*calc_amplitude)(float value
+        ); // Example: 0xFF * sin(value * M_PI_2);
     } CXS_STEPPER_DEV_KIT_amplitude_t;
 
     // ==================================================
@@ -41,14 +42,14 @@ extern "C"
         CXS_STEPPER_DEV_KIT_pulse_t *stepper;
         uint8_t                      index;
         uint8_t                     *results;
-    } CXS_STEPPER_DEV_KIT_pulse_results_t;
+    } CXS_STEPPER_DEV_KIT_pulse_params_t;
 
     typedef struct
     {
         CXS_STEPPER_DEV_KIT_amplitude_t *stepper;
         uint16_t                         index;
-        uint8_t                         *results;
-    } CXS_STEPPER_DEV_KIT_amplitude_results_t;
+        uint8_t                          phase_index;
+    } CXS_STEPPER_DEV_KIT_amplitude_params_t;
 
 #define CXS_STEPPER_DEV_KIT_PASS_full_step_drive(t)                            \
     CXS_STEPPER_DEV_KIT_full_step_drive(                                       \
@@ -129,16 +130,16 @@ extern "C"
     CXS_STEPPER_DEV_KIT_micro_step_drive(                                      \
         (t)->index,                                                            \
         (t)->stepper->phase,                                                   \
+        (t)->phase_index,                                                      \
         (t)->stepper->precision,                                               \
-        (t)->stepper->calc_amplitude,                                          \
-        (t)->results                                                           \
+        (t)->stepper->calc_amplitude                                           \
     )
-    inline void CXS_STEPPER_DEV_KIT_micro_step_drive(
+    inline uint8_t CXS_STEPPER_DEV_KIT_micro_step_drive(
         uint16_t index,
         uint8_t  phase,
+        uint8_t  phase_index,
         uint8_t  precision,
-        uint8_t (*calc_amplitude)(float value),
-        uint8_t *results
+        uint8_t (*calc_amplitude)(float value)
     )
     {
         // The current full-step is determined by (index / precision)
@@ -146,28 +147,20 @@ extern "C"
         uint8_t step_index   = index % precision;
         uint8_t phase_offset = (index / precision) % phase;
 
-        for (size_t i = 0; i < phase; i++)
+        // Current phase in the cycle
+        if (phase_index == phase_offset)
         {
-            uint8_t val = 0;
-
-            // Current phase in the cycle
-            if (i == phase_offset)
-            {
-                // Decaying calc_amplitude wave: peak down 0
-                val =
-                    calc_amplitude((float)(precision - step_index) / precision);
-            }
-            // Next phase in the cycle
-            else if (i == (phase_offset + 1) % phase)
-            {
-                // Rising calc_amplitude wave: 0 up to peak
-                val = calc_amplitude((float)step_index / precision);
-            }
-
-            results[i] = val;
+            // Decaying calc_amplitude wave: peak down 0
+            return calc_amplitude((float)(precision - step_index) / precision);
+        }
+        // Next phase in the cycle
+        else if (phase_index == (phase_offset + 1) % phase)
+        {
+            // Rising calc_amplitude wave: 0 up to peak
+            return calc_amplitude((float)step_index / precision);
         }
 
-        return;
+        return 0x00;
     }
 
 #define CXS_STEPPER_DEV_KIT_PASS_wave_drive(t)                                 \

@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
     for (uint8_t i = 0; i < stepper_pulse.phase; i++)
     {
-        CXS_STEPPER_DEV_KIT_pulse_results_t params = {
+        CXS_STEPPER_DEV_KIT_pulse_params_t params = {
             .index   = i,
             .stepper = &stepper_pulse,
             .results = (uint8_t *)&pulse_results,

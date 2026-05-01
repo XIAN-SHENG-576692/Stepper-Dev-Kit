@@ -41,20 +41,25 @@ int main(int argc, char *argv[])
         &stepper_amplitude
     );
 
-    for (uint16_t i = 0; i < total; i++)
+    CXS_STEPPER_DEV_KIT_amplitude_params_t params = {
+        .index       = 0,
+        .phase_index = 0,
+        .stepper     = &stepper_amplitude,
+    };
+#define i params.index
+    for (i = 0; i < total; i++)
     {
-        CXS_STEPPER_DEV_KIT_amplitude_results_t params = {
-            .index   = i,
-            .stepper = &stepper_amplitude,
-            .results = (uint8_t *)&amplitude_results,
-        };
-        CXS_STEPPER_DEV_KIT_PASS_micro_step_drive(&params);
-        for (size_t j = 0; j < stepper_amplitude.phase; j++)
+#define j params.phase_index
+        for (j = 0; j < stepper_amplitude.phase; j++)
         {
+            amplitude_results.values[j] =
+                CXS_STEPPER_DEV_KIT_PASS_micro_step_drive(&params);
             if (targets[i][j] != amplitude_results.values[j])
                 return 1;
         }
+#undef j
     }
+#undef i
 
     return 0;
 }
