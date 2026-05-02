@@ -34,11 +34,11 @@ int main(int argc, char *argv[])
     );
 
     CXS_STEPPER_DEV_KIT_amplitude_params_t params = {
-        .index       = 0,
         .phase_index = 0,
+        .step_index  = 0,
         .stepper     = &stepper_amplitude,
     };
-#define i params.index
+#define i params.step_index
     for (i = 0; i < total; i++)
     {
 #define j params.phase_index

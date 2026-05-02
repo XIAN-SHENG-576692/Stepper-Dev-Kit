@@ -46,17 +46,25 @@ int main(int argc, char *argv[])
         CXS_STEPPER_DEV_KIT_PASS_get_half_step_drive_total_steps(&stepper_pulse
         );
 
-    for (uint8_t i = 0; i < total; i++)
+    CXS_STEPPER_DEV_KIT_pulse_params_t params = {
+        .result_index = 0,
+        .step_index   = 0,
+        .stepper      = &stepper_pulse,
+    };
+#define i params.step_index
+    for (i = 0; i < total; i++)
     {
-        CXS_STEPPER_DEV_KIT_pulse_params_t params = {
-            .index   = i,
-            .stepper = &stepper_pulse,
-            .results = (uint8_t *)&pulse_results,
-        };
-        CXS_STEPPER_DEV_KIT_PASS_half_step_drive(&params);
+#define j params.result_index
+        for (j = 0; j < (stepper_pulse.phase + 7) / 8; j++)
+        {
+            ((uint8_t *)&pulse_results)[j] =
+                CXS_STEPPER_DEV_KIT_PASS_half_step_drive(&params);
+        }
         if (targets[i] ^ pulse_results)
             return 1;
+#undef j
     }
+#undef i
 
     return 0;
 }
