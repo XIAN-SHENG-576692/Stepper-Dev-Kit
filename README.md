@@ -7,7 +7,7 @@ This kit provides the core logic and utilities needed to streamline your stepper
 ## File Structure
 
 - `cicd/`: Some scripts for CI/CD.
-- `demo/`: For CI/CD to build demo.
+- `demos/`: For CI/CD to build demos.
 - `dev/`: Some scripts for developer.
 - `src/`: The source codes.
 - `tests/`: For CI/CD to build tests.
@@ -45,15 +45,15 @@ The `src.zip` are available for download in the latest release:
     FetchContent_MakeAvailable(cxs_stepper_dev_kit)
     ```
 
-### Trying the Demo
+### Trying the Demos
 
-You don't need to build everything from scratch to see it in action. Our **CI/CD pipeline** automatically builds a functional demo for every release:
+You don't need to build everything from scratch to see it in action. Our **CI/CD pipeline** automatically builds a functional demos for every release:
 1. Navigate to the **Releases** section of this repository.
-2. Download the latest `demo` artifact.
+2. Download the latest `demos.zip` artifact.
 3. Run the executable to explore the toolkit's capabilities.
 
-[![Download demo](https://img.shields.io/github/v/release/XIAN-SHENG-576692/Stepper-Dev-Kit?label=Download%20demo&style=flat)](
-https://github.com/XIAN-SHENG-576692/Stepper-Dev-Kit/releases/download/latest/demo)
+[![Download demos.zip](https://img.shields.io/github/v/release/XIAN-SHENG-576692/Stepper-Dev-Kit?label=Download%20demos.zip&style=flat)](
+https://github.com/XIAN-SHENG-576692/Stepper-Dev-Kit/releases/download/latest/demos.zip)
 
 ## Development and Testing
 
