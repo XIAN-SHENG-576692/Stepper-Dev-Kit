@@ -16,7 +16,10 @@
         "cschlosser.doxdocgen"
       ],
       "settings": {
-        "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json"
+        "C_Cpp.default.compileCommands": [
+          "${workspaceFolder}/examples/build/compile_commands.json",
+          "${workspaceFolder}/tests/build/compile_commands.json"
+        ]
       }
     }
   },

@@ -4,8 +4,8 @@
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 . "$SCRIPT_DIR/config.env"
 
-cd "$TESTS_DIR" || {
-    echo "Error: Unable to access $TESTS_DIR"
+cd "$EXAMPLES_DIR" || {
+    echo "Error: Unable to access $EXAMPLES_DIR"
     exit 1
 }
 

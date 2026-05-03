@@ -1,7 +1,3 @@
-if(NOT TARGET cxs_stepper_dev_kit)
-    add_library(cxs_stepper_dev_kit)
-endif()
-
 file(GLOB C_FILES CONFIGURE_DEPENDS "*.c")
 file(GLOB H_FILES CONFIGURE_DEPENDS "*.h")
 

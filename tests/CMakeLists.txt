@@ -1,5 +1,16 @@
+cmake_minimum_required(VERSION 3.23)
+
+project(Tests)
+
+enable_testing()
+
 file(GLOB C_FILES CONFIGURE_DEPENDS "*.c")
 file(GLOB H_FILES CONFIGURE_DEPENDS "*.h")
+
+add_subdirectory(
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${CMAKE_CURRENT_BINARY_DIR}/cxs_stepper_dev_kit
+)
 
 function(AddTest option)
     set(OPTION_TARGET "test_${option}")
@@ -11,7 +22,13 @@ function(AddTest option)
         PRIVATE
             -Wall
             -Werror
-            -O3
+            -O2
+    )
+
+    target_link_libraries(
+        ${OPTION_TARGET}
+        PRIVATE
+            cxs_stepper_dev_kit
     )
 
     target_sources(
@@ -43,7 +60,7 @@ function(AddTest option)
     if(m)
         target_link_libraries(
             ${OPTION_TARGET}
-            PUBLIC
+            PRIVATE
                 m
         )
     endif()

@@ -1,8 +1,17 @@
+cmake_minimum_required(VERSION 3.23)
+
+project(Examples)
+
 file(GLOB C_FILES CONFIGURE_DEPENDS "*.c")
 file(GLOB H_FILES CONFIGURE_DEPENDS "*.h")
 
-function(AddDemo option)
-    set(OPTION_TARGET "demo_${option}")
+add_subdirectory(
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${CMAKE_CURRENT_BINARY_DIR}/cxs_stepper_dev_kit
+)
+
+function(AddExample option)
+    set(OPTION_TARGET "example_${option}")
 
     add_executable(${OPTION_TARGET})
 
@@ -11,7 +20,13 @@ function(AddDemo option)
         PRIVATE
             -Wall
             -Werror
-            -O3
+            -O2
+    )
+
+    target_link_libraries(
+        ${OPTION_TARGET}
+        PRIVATE
+            cxs_stepper_dev_kit
     )
 
     target_sources(
@@ -43,7 +58,7 @@ function(AddDemo option)
     if(m)
         target_link_libraries(
             ${OPTION_TARGET}
-            PUBLIC
+            PRIVATE
                 m
         )
     endif()
@@ -51,5 +66,5 @@ endfunction()
 
 foreach(file_path IN LISTS C_FILES)
     cmake_path(GET file_path STEM file_stem)
-    AddDemo(${file_stem})
+    AddExample(${file_stem})
 endforeach()

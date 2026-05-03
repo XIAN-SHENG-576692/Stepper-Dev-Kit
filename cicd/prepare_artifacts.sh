@@ -7,8 +7,8 @@ SCRIPT_DIR=$(cd $(dirname $0); pwd)
 # artifacts
 mkdir -p ${ARTIFACTS_DIR}
 
-# demos.zip
-zip -j ${ARTIFACTS_DEMOS_ZIP} ${DEOM_FILES}
+# examples.zip
+zip -j ${ARTIFACTS_EXAMPLES_ZIP} ${EXAMPLE_FILES}
 
 # src.zip
 cd ${SRC_DIR} \

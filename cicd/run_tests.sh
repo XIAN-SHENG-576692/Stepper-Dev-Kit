@@ -4,4 +4,9 @@
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 . "$SCRIPT_DIR/config.env"
 
-ctest --test-dir ${BUILD_DIR}
+cd "$TESTS_DIR" || {
+    echo "Error: Unable to access $TESTS_DIR"
+    exit 1
+}
+
+ctest --test-dir build --rerun-failed --output-on-failure

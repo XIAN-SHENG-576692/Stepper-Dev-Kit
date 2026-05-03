@@ -32,9 +32,9 @@ jobs:
         ./cicd/build_tests.sh
         ./cicd/run_tests.sh
 
-    - name: Build Demos
+    - name: Build Examples
       run: |
-        ./cicd/build_demos.sh
+        ./cicd/build_examples.sh
 
     - name: Prepare artifacts
       run: |
