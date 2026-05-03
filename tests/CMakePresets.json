@@ -1,10 +1,17 @@
 {
   "version": 4,
+  "buildPresets": [
+    {
+      "name": "tests",
+      "description": "Preset to build Tests",
+      "configurePreset": "tests"
+    }
+  ],
   "configurePresets": [
     {
-      "name": "build",
-      "displayName": "Build",
-      "description": "Preset to build",
+      "name": "tests",
+      "displayName": "Tests",
+      "description": "Preset to configure Tests",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"

@@ -1,13 +1,21 @@
 {
   "version": 4,
+  "buildPresets": [
+    {
+      "name": "dist",
+      "configurePreset": "release-dist",
+      "targets": ["install"]
+    }
+  ],
   "configurePresets": [
     {
-      "name": "build",
-      "displayName": "Build",
-      "description": "Preset to build",
+      "name": "release-dist",
+      "displayName": "Release Distribution",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/dist"
       }
     }
   ]

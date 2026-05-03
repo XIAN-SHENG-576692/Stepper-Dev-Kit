@@ -62,6 +62,13 @@ function(AddExample option)
                 m
         )
     endif()
+
+    install(
+        TARGETS
+            ${OPTION_TARGET}
+            DESTINATION
+                ${CMAKE_INSTALL_PREFIX}/bin
+    )
 endfunction()
 
 foreach(file_path IN LISTS C_FILES)

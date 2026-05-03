@@ -1,4 +1,4 @@
-name: Build README
+name: Release Latest
 
 on:
   push:
@@ -24,21 +24,22 @@ jobs:
 
     - name: Init
       run: |
-        chmod +x ./cicd/*.sh
-        ./cicd/setup.sh
+        chmod +x ./cd/*.sh
+        chmod +x ./ci/*.sh
+        ./ci/setup.sh
 
     - name: Build then run Tests
       run: |
-        ./cicd/build_tests.sh
-        ./cicd/run_tests.sh
+        ./ci/build_tests.sh
+        ./ci/run_tests.sh
 
     - name: Build Examples
       run: |
-        ./cicd/build_examples.sh
+        ./ci/build_examples.sh
 
     - name: Prepare artifacts
       run: |
-        ./cicd/prepare_artifacts.sh
+        ./cd/prepare_artifacts.sh
 
     - name: Update latest tag
       env:

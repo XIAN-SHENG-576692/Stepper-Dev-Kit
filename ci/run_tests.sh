@@ -2,12 +2,11 @@
 
 # Configuration
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
-. "$SCRIPT_DIR/config.env"
+. "$SCRIPT_DIR/../env/config.env"
 
 cd "$TESTS_DIR" || {
     echo "Error: Unable to access $TESTS_DIR"
     exit 1
 }
 
-cmake --preset build
-cmake --build build
+ctest --test-dir build --rerun-failed --output-on-failure

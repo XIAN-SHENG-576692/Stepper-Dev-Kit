@@ -1,7 +1,8 @@
 #!/bin/sh
 
+# Configuration
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
-ROOT_DIR="$SCRIPT_DIR/.."
+. "$SCRIPT_DIR/../env/config.env"
 
 cd "$ROOT_DIR" || {
     echo "Error: Unable to access $ROOT_DIR"
