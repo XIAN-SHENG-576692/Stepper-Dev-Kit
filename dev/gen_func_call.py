@@ -11,7 +11,10 @@ def main():
 
     for cursor in tu.cursor.get_children():
         if (
-            cursor.kind in [
+            cursor.is_definition()
+            and cursor.location.file
+            and cursor.location.file.name == file_path
+            and cursor.kind in [
                 clang.cindex.CursorKind.FUNCTION_DECL,
                 clang.cindex.CursorKind.CXX_METHOD,
             ]
@@ -25,20 +28,25 @@ def main():
     for func in function_list:
         # parameters
         cursor=func["cursor"]
-        args_pass=",".join([f"args.{arg.spelling}" for arg in func["args_cursor"]])
         args_declare=[f"{arg.type.spelling} {arg.spelling}" for arg in func["args_cursor"]]
         args_declare_in_struct="".join([f"{arg};" for arg in args_declare])
-        args_struct=f"__{cursor.spelling}_args__"
+        args_pass=",".join([f"args->{arg.spelling}" for arg in func["args_cursor"]])
+        args_struct_name=f"__{cursor.spelling}_args__"
+        func_call_name=f"__{cursor.spelling}_call__"
+        func_call_macro_name=f"{cursor.spelling}_call"
         # struct
         output+="typedef struct {"
         output+=f"{args_declare_in_struct}"
         output+="}"
-        output+=f" {args_struct};"
+        output+=f" {args_struct_name};"
+        # call function
+        output+=f"inline {cursor.result_type.spelling} {func_call_name}(const {args_struct_name} *const args)"
+        output+="{"
+        output+=f"return {cursor.spelling}({args_pass});"
+        output+="};"
         # macro
-        output+=f"\n#define {cursor.spelling}_call(...) ""({"
-        output+=f"{args_struct} args=""{__VA_ARGS__};"
-        output+=f"{cursor.spelling}({args_pass});"
-        output+="})\n"
+        output+=f"\n#define {cursor.spelling}_call(...) "
+        output+=f"{func_call_name}(&(const {args_struct_name}) ""{__VA_ARGS__})\n"
     
     print(output)
 

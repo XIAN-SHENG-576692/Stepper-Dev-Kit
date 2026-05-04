@@ -18,7 +18,10 @@ def main():
 
     for cursor in tu.cursor.get_children():
         if (
-            cursor.kind in [
+            cursor.is_definition()
+            and cursor.location.file
+            and cursor.location.file.name == file_path
+            and cursor.kind in [
                 clang.cindex.CursorKind.FUNCTION_DECL,
                 clang.cindex.CursorKind.CXX_METHOD,
             ]

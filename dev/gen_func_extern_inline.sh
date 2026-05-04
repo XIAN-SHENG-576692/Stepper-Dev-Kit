@@ -18,13 +18,11 @@ OUTPUT_FILE_PATH="${INPUT_FILE_DIR}/${INPUT_FILE_BASE_NAME_NO_EXTENSION}_extern_
 
 source "${PYTHON_VENV_ACTIVATE}"
 
-# clang -Xclang -ast-dump -fsyntax-only "$INPUT_FILE_PATH"
-
-RESULT=$(python3 "${SCRIPT_DIR}/gen_func_extern_inline.py" "$INPUT_FILE_PATH")
+RESULT=$(python3 "${SCRIPT_DIR}/gen_func_extern_inline.py" "${INPUT_FILE_PATH}")
 
 cat << EOF > "${OUTPUT_FILE_PATH}"
-#include "$INPUT_FILE_BASE_NAME"
-$(echo -e "$RESULT")
+#include "${INPUT_FILE_BASE_NAME}"
+$(echo -e "${RESULT}")
 EOF
 
 deactivate
