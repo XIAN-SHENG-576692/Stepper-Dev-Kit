@@ -29,29 +29,28 @@ int main(int argc, char *argv[])
     }
 
     printf("RESULTS: \n");
-    uint16_t total = CXS_STEPPER_DEV_KIT_PASS_get_micro_step_drive_total_steps(
-        &stepper_amplitude
+
+    uint16_t total = CXS_STEPPER_DEV_KIT_get_micro_step_drive_total_steps_call(
+            .phase     = stepper_amplitude.phase,
+            .precision = stepper_amplitude.precision
     );
 
-    CXS_STEPPER_DEV_KIT_amplitude_params_t params = {
-        .phase_index = 0,
-        .step_index  = 0,
-        .stepper     = &stepper_amplitude,
-    };
-#define i params.step_index
-    for (i = 0; i < total; i++)
+    for (uint16_t i = 0; i < total; i++)
     {
-#define j params.phase_index
-        for (j = 0; j < stepper_amplitude.phase; j++)
+        for (uint8_t j = 0; j < stepper_amplitude.phase; j++)
         {
             amplitude_results.values[j] =
-                CXS_STEPPER_DEV_KIT_PASS_micro_step_drive(&params);
+                CXS_STEPPER_DEV_KIT_micro_step_drive_call(
+                        .calc_amplitude = stepper_amplitude.calc_amplitude,
+                        .phase          = stepper_amplitude.phase,
+                        .phase_index    = j,
+                        .precision      = stepper_amplitude.precision,
+                        .step_index     = i,
+                );
             printf("0x%02X,", amplitude_results.values[j]);
         }
         printf("\n");
-#undef j
     }
-#undef i
 
     return 0;
 }

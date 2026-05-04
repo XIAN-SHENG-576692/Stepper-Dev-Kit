@@ -17,28 +17,24 @@ int main(int argc, char *argv[])
     printf("PHASES: %2d\n", stepper_pulse.phase);
 
     printf("RESULTS: \n");
-    uint8_t total =
-        CXS_STEPPER_DEV_KIT_PASS_get_half_step_drive_total_steps(&stepper_pulse
-        );
 
-    CXS_STEPPER_DEV_KIT_pulse_params_t params = {
-        .result_index = 0,
-        .step_index   = 0,
-        .stepper      = &stepper_pulse,
-    };
-#define i params.step_index
-    for (i = 0; i < total; i++)
+    uint16_t total = CXS_STEPPER_DEV_KIT_get_half_step_drive_total_steps_call(
+            .phase = stepper_pulse.phase
+    );
+
+    for (uint16_t i = 0; i < total; i++)
     {
-#define j params.result_index
-        for (j = 0; j < (stepper_pulse.phase + 7) / 8; j++)
+        for (uint8_t j = 0; j < (stepper_pulse.phase + 7) / 8; j++)
         {
             ((uint8_t *)&pulse_results)[j] =
-                CXS_STEPPER_DEV_KIT_PASS_half_step_drive(&params);
+                CXS_STEPPER_DEV_KIT_half_step_drive_call(
+                        .phase        = stepper_pulse.phase,
+                        .result_index = j,
+                        .step_index   = i,
+                );
         }
         printf("%0" STRINGIZE_THIS_DEFINITION(PHASES) "b\n", pulse_results);
-#undef j
     }
-#undef i
 
     return 0;
 }

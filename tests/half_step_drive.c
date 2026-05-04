@@ -17,14 +17,14 @@ int main(int argc, char *argv[])
     pulse_results_t targets[PHASES * 2] = {
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
         // clang-format off
-        0b1000,
-        0b1100,
-        0b0100,
-        0b0110,
-        0b0010,
-        0b0011,
-        0b0001,
-        0b1001,
+        0b10000000,
+        0b11000000,
+        0b01000000,
+        0b01100000,
+        0b00100000,
+        0b00110000,
+        0b00010000,
+        0b10010000,
     // clang-format on
 #elif defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
         // clang-format off
@@ -42,29 +42,24 @@ int main(int argc, char *argv[])
 #endif
     };
 
-    uint8_t total =
-        CXS_STEPPER_DEV_KIT_PASS_get_half_step_drive_total_steps(&stepper_pulse
-        );
+    uint16_t total = CXS_STEPPER_DEV_KIT_get_half_step_drive_total_steps_call(
+            .phase = stepper_pulse.phase
+    );
 
-    CXS_STEPPER_DEV_KIT_pulse_params_t params = {
-        .result_index = 0,
-        .step_index   = 0,
-        .stepper      = &stepper_pulse,
-    };
-#define i params.step_index
-    for (i = 0; i < total; i++)
+    for (uint16_t i = 0; i < total; i++)
     {
-#define j params.result_index
-        for (j = 0; j < (stepper_pulse.phase + 7) / 8; j++)
+        for (uint8_t j = 0; j < (stepper_pulse.phase + 7) / 8; j++)
         {
             ((uint8_t *)&pulse_results)[j] =
-                CXS_STEPPER_DEV_KIT_PASS_half_step_drive(&params);
+                CXS_STEPPER_DEV_KIT_half_step_drive_call(
+                        .phase        = stepper_pulse.phase,
+                        .result_index = j,
+                        .step_index   = i,
+                );
         }
         if (targets[i] ^ pulse_results)
             return 1;
-#undef j
     }
-#undef i
 
     return 0;
 }

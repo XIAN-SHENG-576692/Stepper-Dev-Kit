@@ -6,4 +6,5 @@ if(NOT TARGET cxs_stepper_dev_kit)
     add_library(cxs_stepper_dev_kit)
 endif()
 
+add_subdirectory(include)
 add_subdirectory(src)

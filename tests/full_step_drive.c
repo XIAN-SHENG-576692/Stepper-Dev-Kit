@@ -17,10 +17,10 @@ int main(int argc, char *argv[])
     pulse_results_t targets[PHASES] = {
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
         // clang-format off
-        0b1100,
-        0b0110,
-        0b0011,
-        0b1001,
+        0b11000000,
+        0b01100000,
+        0b00110000,
+        0b10010000,
     // clang-format on
 #elif defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
         // clang-format off
@@ -34,25 +34,20 @@ int main(int argc, char *argv[])
 #endif
     };
 
-    CXS_STEPPER_DEV_KIT_pulse_params_t params = {
-        .result_index = 0,
-        .step_index   = 0,
-        .stepper      = &stepper_pulse,
-    };
-#define i params.step_index
-    for (i = 0; i < stepper_pulse.phase; i++)
+    for (uint8_t i = 0; i < stepper_pulse.phase; i++)
     {
-#define j params.result_index
-        for (j = 0; j < (stepper_pulse.phase + 7) / 8; j++)
+        for (uint8_t j = 0; j < (stepper_pulse.phase + 7) / 8; j++)
         {
             ((uint8_t *)&pulse_results)[j] =
-                CXS_STEPPER_DEV_KIT_PASS_full_step_drive(&params);
+                CXS_STEPPER_DEV_KIT_full_step_drive_call(
+                        .phase        = stepper_pulse.phase,
+                        .result_index = j,
+                        .step_index   = i,
+                );
         }
         if (targets[i] ^ pulse_results)
             return 1;
-#undef j
     }
-#undef i
 
     return 0;
 }

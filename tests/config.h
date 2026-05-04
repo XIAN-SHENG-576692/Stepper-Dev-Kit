@@ -11,12 +11,6 @@ extern "C"
 {
 #endif
 
-/**
- * @author    XIAN-SHENG CHEN
- * @date      April 2026
- *
- * Copyright (c) 2026 XIAN-SHENG CHEN. All Rights Reserved.
- **/
 #include "cxs_stepper_dev_kit.h"
 
 #define __USE_MISC

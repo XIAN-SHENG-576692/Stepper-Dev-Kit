@@ -15,6 +15,7 @@ RUN apt-get update -y && apt-get install -y \
     gh \
     neovim \
     tree \
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
 CMD ["sleep", "infinity"]

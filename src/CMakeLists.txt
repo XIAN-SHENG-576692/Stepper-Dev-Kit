@@ -22,7 +22,7 @@ target_precompile_headers(
 
 target_include_directories(
     cxs_stepper_dev_kit
-    PUBLIC
+    PRIVATE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:>
 )
