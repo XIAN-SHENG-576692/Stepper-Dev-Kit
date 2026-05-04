@@ -15,7 +15,6 @@ extern "C"
 
 #define __USE_MISC
 #include <math.h>
-#include <stdio.h>
 
 #define STRINGIZE_THIS(var)            #var
 #define STRINGIZE_THIS_DEFINITION(var) STRINGIZE_THIS(var)

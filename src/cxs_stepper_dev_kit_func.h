@@ -13,10 +13,6 @@ extern "C"
 
 #include "cxs_stepper_dev_kit_type.h"
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-
     inline uint8_t CXS_STEPPER_DEV_KIT_full_step_drive(
         uint8_t phase,
         uint8_t result_index,
