@@ -7,8 +7,8 @@ extern "C"
 #include "cxs_stepper_dev_kit_func.h"
     typedef struct
     {
+        uint8_t byte_index;
         uint8_t phase;
-        uint8_t result_index;
         uint8_t step_index;
     } __CXS_STEPPER_DEV_KIT_full_step_drive_args__;
     inline uint8_t __CXS_STEPPER_DEV_KIT_full_step_drive_call__(
@@ -16,8 +16,8 @@ extern "C"
     )
     {
         return CXS_STEPPER_DEV_KIT_full_step_drive(
+            args->byte_index,
             args->phase,
-            args->result_index,
             args->step_index
         );
     };
@@ -63,8 +63,8 @@ extern "C"
     ){__VA_ARGS__})
     typedef struct
     {
+        uint8_t byte_index;
         uint8_t phase;
-        uint8_t result_index;
         uint8_t step_index;
     } __CXS_STEPPER_DEV_KIT_half_step_drive_args__;
     inline uint8_t __CXS_STEPPER_DEV_KIT_half_step_drive_call__(
@@ -72,8 +72,8 @@ extern "C"
     )
     {
         return CXS_STEPPER_DEV_KIT_half_step_drive(
+            args->byte_index,
             args->phase,
-            args->result_index,
             args->step_index
         );
     };
@@ -107,8 +107,8 @@ extern "C"
     )
     typedef struct
     {
+        uint8_t byte_index;
         uint8_t phase;
-        uint8_t result_index;
         uint8_t step_index;
     } __CXS_STEPPER_DEV_KIT_wave_drive_args__;
     inline uint8_t __CXS_STEPPER_DEV_KIT_wave_drive_call__(
@@ -116,8 +116,8 @@ extern "C"
     )
     {
         return CXS_STEPPER_DEV_KIT_wave_drive(
+            args->byte_index,
             args->phase,
-            args->result_index,
             args->step_index
         );
     };

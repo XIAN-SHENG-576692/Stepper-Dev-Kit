@@ -22,7 +22,6 @@ extern "C"
      * @brief A function that calculates amplitude based on a given value.
      *
      * @param value The ratio of index to max.
-     *
      * @return The amplitude.
      *
      * @note

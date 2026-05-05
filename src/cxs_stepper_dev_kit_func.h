@@ -13,26 +13,69 @@ extern "C"
 
 #include "cxs_stepper_dev_kit_type.h"
 
+/**
+ * @brief Map the byte index to the equivalent step index.
+ *
+ * @param byte_index The byte index
+ * @return The step index
+ *
+ * @note
+ * ```latex
+ * \begin{math}
+ * byte_index \times 8
+ * \end{math}
+ * ```
+ */
+#define __byte_index_to_step_index(byte_index) (byte_index << 3)
+
     inline uint8_t CXS_STEPPER_DEV_KIT_full_step_drive(
+        uint8_t byte_index,
         uint8_t phase,
-        uint8_t result_index,
         uint8_t step_index
     )
     {
-#define __result0 (step_index - (result_index * 8))
-#define __result1 (((step_index + 1) % phase) - (result_index * 8))
+#define __result0 (step_index - __byte_index_to_step_index(byte_index))
+#define __result1                                                              \
+    (((step_index + 1) % phase) - __byte_index_to_step_index(byte_index))
         return ((__result0 >= 0) ? 1 << __result0 : 0) |
                ((__result1 >= 0) ? 1 << __result1 : 0);
 #undef __result1
 #undef __result0
     }
 
+    /**
+     * @brief Get the total number of steps for half-step drive.
+     *
+     * @param phase The number of phases
+     * @return The total number of steps
+     *
+     * @note
+     * ```latex
+     * \begin{math}
+     * phase \times 2
+     * \end{math}
+     * ```
+     */
     inline uint16_t
     CXS_STEPPER_DEV_KIT_get_half_step_drive_total_steps(uint8_t phase)
     {
-        return phase * 2;
+        return phase << 1;
     }
 
+    /**
+     * @brief Get the total number of steps for micro-step drive.
+     *
+     * @param phase The number of phases
+     * @param precision The precision of amplitude
+     * @return The total number of steps
+     *
+     * @note
+     * ```latex
+     * \begin{math}
+     * phase \times precision
+     * \end{math}
+     * ```
+     */
     inline uint16_t CXS_STEPPER_DEV_KIT_get_micro_step_drive_total_steps(
         uint8_t phase,
         uint8_t precision
@@ -42,17 +85,17 @@ extern "C"
     }
 
     inline uint8_t CXS_STEPPER_DEV_KIT_half_step_drive(
+        uint8_t byte_index,
         uint8_t phase,
-        uint8_t result_index,
         uint8_t step_index
     )
     {
 #define __half_index (step_index / 2)
-#define __result0    (__half_index - (result_index * 8))
+#define __result0    (__half_index - __byte_index_to_step_index(byte_index))
 #define __result1                                                              \
-    (((step_index % 2) == 1)                                                   \
-         ? (((__half_index + 1) % phase) - (result_index * 8))                 \
-         : -1)
+    (((step_index % 2) == 1) ? (((__half_index + 1) % phase) -                 \
+                                __byte_index_to_step_index(byte_index))        \
+                             : -1)
         return ((__result0 >= 0) ? 1 << __result0 : 0) |
                ((__result1 >= 0) ? 1 << __result1 : 0);
 #undef __result1
@@ -90,15 +133,17 @@ extern "C"
     }
 
     inline uint8_t CXS_STEPPER_DEV_KIT_wave_drive(
+        uint8_t byte_index,
         uint8_t phase,
-        uint8_t result_index,
         uint8_t step_index
     )
     {
-#define __result (step_index - (result_index * 8))
+#define __result (step_index - __byte_index_to_step_index(byte_index))
         return ((__result >= 0) ? 1 << __result : 0);
 #undef __result
     }
+
+#undef __byte_index_to_step_index
 
 #ifdef __cplusplus
 }

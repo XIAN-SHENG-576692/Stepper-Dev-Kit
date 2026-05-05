@@ -40,9 +40,9 @@ int main(int argc, char *argv[])
         {
             ((uint8_t *)&pulse_results)[j] =
                 CXS_STEPPER_DEV_KIT_wave_drive_call(
-                        .phase        = stepper_pulse.phase,
-                        .result_index = j,
-                        .step_index   = i,
+                        .byte_index = j,
+                        .phase      = stepper_pulse.phase,
+                        .step_index = i,
                 );
         }
         if (targets[i] ^ pulse_results)
