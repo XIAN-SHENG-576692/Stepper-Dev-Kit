@@ -62,11 +62,10 @@ extern "C"
 
     inline uint8_t CXS_STEPPER_DEV_KIT_micro_step_drive(
         CXS_STEPPER_DEV_KIT_calc_amplitude_fn calc_amplitude,
-        // uint8_t (*calc_amplitude)(float value),
-        uint8_t  phase,
-        uint8_t  phase_index,
-        uint8_t  precision,
-        uint16_t step_index
+        uint8_t                               phase,
+        uint8_t                               phase_index,
+        uint8_t                               precision,
+        uint16_t                              step_index
     )
     {
         // The current full-step is determined by (step_index / precision)

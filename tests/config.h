@@ -16,9 +16,6 @@ extern "C"
 #define __USE_MISC
 #include <math.h>
 
-#define STRINGIZE_THIS(var)            #var
-#define STRINGIZE_THIS_DEFINITION(var) STRINGIZE_THIS(var)
-
 #define PHASES 4
 
 #define AMPLITUDE_PRECISION 4
