@@ -9,7 +9,7 @@ This kit provides the core logic and utilities needed to streamline your stepper
 - `cd/`: Some scripts for CD.
 - `ci/`: Some scripts for CI.
 - `dev/`: Some scripts for developer.
-- `env/`: Some environment variables.
+- `env/`: Some environment variables for CI/CD and development.
 - `examples/`: For CI to build examples.
 - `include/`: The include headers.
 - `src/`: The source codes.

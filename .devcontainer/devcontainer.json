@@ -6,14 +6,14 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "cschlosser.doxdocgen",
+        "formulahendry.code-runner",
         "github.vscode-github-actions",
         "ms-vscode.cpptools",
         "ms-vscode.cpptools-extension-pack",
         "ms-vscode.cmake-tools",
         "ms-vscode.makefile-tools",
-        "formulahendry.code-runner",
-        "usernamehw.errorlens",
-        "cschlosser.doxdocgen"
+        "usernamehw.errorlens"
       ],
       "settings": {
         "C_Cpp.default.compileCommands": [
